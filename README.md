@@ -1,5 +1,5 @@
-Symfony Standard Edition
-========================
+Création d'un blog avec Symfony 4.4.8
+======================================
 
 Welcome to the Symfony Standard Edition - a fully-functional Symfony2
 application that you can use as the skeleton for your new applications.
