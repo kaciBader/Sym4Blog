@@ -5,12 +5,13 @@ namespace App\DataFixtures;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use App\Entity\Blog;
+use Faker;
 
 class BlogFixtures extends Fixture
 {
     public function load(ObjectManager $manager)
     {
-        $blog1 = new Blog();
+        /*$blog1 = new Blog();
         $blog1->setTitle('A day with Symfony2');
         $blog1->setBlog('Lorem ipsum dolor sit amet, consectetur adipiscing eletra electrify denim vel ports.\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi ut velocity magna. Etiam vehicula nunc non leo hendrerit commodo. Vestibulum vulputate mauris eget erat congue dapibus imperdiet justo scelerisque. Nulla consectetur tempus nisl vitae viverra. Cras el mauris eget erat congue dapibus imperdiet justo scelerisque. Nulla consectetur tempus nisl vitae viverra. Cras elementum molestie vestibulum. Morbi id quam nisl. Praesent hendrerit, orci sed elementum lobortis, justo mauris lacinia libero, non facilisis purus ipsum non mi. Aliquam sollicitudin, augue id vestibulum iaculis, sem lectus convallis nunc, vel scelerisque lorem tortor ac nunc. Donec pharetra eleifend enim vel porta.');
         $blog1->setImage('beach.jpg');
@@ -60,6 +61,29 @@ class BlogFixtures extends Fixture
         $blog5->setUpdated($blog5->getCreated());
         $manager->persist($blog5);
 
+        $manager->flush();*/
+
+        $faker = Faker\Factory::create();
+        for($i =0 ; $i< 10; $i++) 
+        {
+            $blog = new Blog();
+            $blog->setTitle( $faker->text(20));
+            //$faker->text(5); 
+
+            $blog->setBlog($faker->text(1000));
+            //$blog->setImage($faker->image($dir = 'public/images', $width = 640, $height = 480,null, false));
+             $blog->setImage('one_or_zero.jpg');
+
+            $blog->setAuthor($faker->name);
+           // $blog->setTags('binary, one, zero, alive, dead, !trusting, movie, symblog');
+            $blog->setTags(implode(',',$faker->words($nb = 5, $asText = false)) );  
+            $blog->setCreated($faker->dateTime());
+            $blog->setUpdated($blog->getCreated());
+            $manager->persist($blog);
+
+        }
         $manager->flush();
+
+
     }
 }
