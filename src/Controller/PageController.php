@@ -6,6 +6,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController ;
 use Symfony\Component\Routing\Annotation\Route ;
 use App\Entity\Enquiry;
 use App\Form\EnquiryType;
+use App\Entity\Blog;
 use Symfony\Component\HttpFoundation\Request;
 
 
@@ -17,7 +18,20 @@ class PageController extends AbstractController
 	*/
 	public function index()
 	{
-		return $this->render('Page/index.html.twig');
+
+		$em = $this->getDoctrine()
+                   ->getManager();
+
+
+        $blogs  = $em->getRepository(Blog::class)->getLatestBlogs();
+       /* $blogs = $em->createQueryBuilder()
+                    ->select('b')
+                    ->from(Blog::class,  'b')
+                    ->addOrderBy('b.created', 'DESC')
+                    ->getQuery()
+                    ->getResult();*/
+
+		return $this->render('Page/index.html.twig',['blogs' =>$blogs]);
 	}
 
 	/**

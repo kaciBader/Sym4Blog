@@ -4,10 +4,11 @@ namespace App\DataFixtures;
 
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
+use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use App\Entity\Blog;
 use Faker;
 
-class BlogFixtures extends Fixture
+class BlogFixtures extends Fixture implements OrderedFixtureInterface
 {
     public function load(ObjectManager $manager)
     {
@@ -63,27 +64,43 @@ class BlogFixtures extends Fixture
 
         $manager->flush();*/
 
+        $blog = array();
         $faker = Faker\Factory::create();
         for($i =0 ; $i< 10; $i++) 
         {
-            $blog = new Blog();
-            $blog->setTitle( $faker->text(20));
+            $blog[$i] = new Blog();
+            $blog[$i]->setTitle( $faker->text(20));
             //$faker->text(5); 
 
-            $blog->setBlog($faker->text(1000));
+           $blog[$i]->setBlog($faker->text(1000));
             //$blog->setImage($faker->image($dir = 'public/images', $width = 640, $height = 480,null, false));
-             $blog->setImage('one_or_zero.jpg');
+             $blog[$i]->setImage('one_or_zero.jpg');
 
-            $blog->setAuthor($faker->name);
+            $blog[$i]->setAuthor($faker->name);
            // $blog->setTags('binary, one, zero, alive, dead, !trusting, movie, symblog');
-            $blog->setTags(implode(',',$faker->words($nb = 5, $asText = false)) );  
-            $blog->setCreated($faker->dateTime());
-            $blog->setUpdated($blog->getCreated());
-            $manager->persist($blog);
+            $blog[$i]->setTags(implode(',',$faker->words($nb = 5, $asText = false)) );  
+           $blog[$i]->setCreated($faker->dateTime());
+            $blog[$i]->setUpdated($blog[$i]->getCreated());
+            $manager->persist($blog[$i]);
 
         }
+
         $manager->flush();
 
+       for($i =0 ; $i< 10; $i++) 
+       {
+            $this->addReference('blog-'.$i, $blog[$i]);
+       }    
 
+        /*$this->addReference('blog-1', $blog1);
+        $this->addReference('blog-2', $blog2);
+        $this->addReference('blog-3', $blog3);
+        $this->addReference('blog-4', $blog4);
+        $this->addReference('blog-5', $blog5);*/
+    }
+
+    public function getOrder()
+    {
+        return 1;
     }
 }

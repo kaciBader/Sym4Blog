@@ -44,6 +44,9 @@ class Blog
      */
     private $tags;
 
+    /**
+     * @ORM\OneToMany(targetEntity="Comment", mappedBy="blog")
+     */
     protected $comments;
 
     /**
