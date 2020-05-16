@@ -21,4 +21,13 @@
             {% include 'Comment/index.html.twig' with { 'comments': comments } %}
         </section>
     </section>
+
+     <section class="comments" id="comments">
+        {# .. #}
+
+        <h3>Add Comment</h3>
+        
+        {{ render(controller("App\\Controller\\CommentController::createAction", {'blog_id': blog.id})) }}
+    </section>
+
 {% endblock %}
