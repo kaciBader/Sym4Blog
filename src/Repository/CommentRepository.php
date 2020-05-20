@@ -65,4 +65,20 @@ class CommentRepository extends ServiceEntityRepository
         return $qb->getQuery()
                   ->getResult();
     }
+
+    /**
+     * @return Comment[] Returns an array of limit Comment objects
+     */
+    public function getLatestComments($limit = 10)
+    {
+        $qb = $this->createQueryBuilder('c')
+                    ->select('c')
+                    ->addOrderBy('c.id', 'DESC');
+
+        if (false === is_null($limit))
+            $qb->setMaxResults($limit);
+
+        return $qb->getQuery()
+                  ->getResult();
+    }
 }

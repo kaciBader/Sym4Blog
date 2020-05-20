@@ -11,7 +11,10 @@ use App\Form\CommentType;
 class CommentController extends AbstractController
 {
     /**
-     * @Route("/comment", name="comment")
+     * @Route(
+     *      "/comment",
+     *       name="comment"
+     * )
      */
     public function index()
     {
@@ -21,11 +24,14 @@ class CommentController extends AbstractController
     }
 
     /**
-    * @Route("/comment/{blog_id}", name = "comment_create", requirements = {"blog_id" = "\d+"})
+    * @Route(
+    *       "/comment/{blog_id}",
+    *        name = "comment_create",
+    *        requirements = {"blog_id" = "\d+"}
+    * )
     */
     public function createAction($blog_id, Request $request)
     {
-        //$blog = $this->getBlog($blog_id);
 
         $em = $this->getDoctrine()
                     ->getManager();
@@ -47,9 +53,7 @@ class CommentController extends AbstractController
                        ->getManager();
             $em->persist($comment);
             $em->flush();
-
-           
-
+            
             return $this->redirectToRoute('blog_show', ['id' => $comment->getBlog()->getId()]
             );
         }

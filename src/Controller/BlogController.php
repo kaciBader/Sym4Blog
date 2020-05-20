@@ -9,12 +9,14 @@ use App\Entity\Comment;
 class BlogController extends AbstractController
 {
     /**
-     * @Route("/{id}", name="blog_show", requirements = { "id" = "\d+"})
+     * @Route(
+     *      "/{id}",
+     *       name="blog_show",
+     *       requirements = { "id" = "\d+"}
+     * )
      */
     public function show($id)
     {
-
-
     	$em = $this->getDoctrine()->getManager();
 
         $blog = $em->getRepository(Blog::class)->find($id);
@@ -23,22 +25,12 @@ class BlogController extends AbstractController
             throw $this->createNotFoundException('Unable to find Blog post.');
         }
 
-
         $comments = $em->getRepository(Comment::class)
                    ->getCommentsForBlog($blog->getId());
-
-
 
         return $this->render('blog/show.html.twig', [
             'blog'  => $blog,
             'comments' => $comments
-
         ]);
-
-
-
-       // return $this->render('blog/show.html.twig', [
-           // 'controller_name' => 'BlogController',
-        //]);
     }
 }

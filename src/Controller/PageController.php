@@ -7,35 +7,44 @@ use Symfony\Component\Routing\Annotation\Route ;
 use App\Entity\Enquiry;
 use App\Form\EnquiryType;
 use App\Entity\Blog;
+use App\Entity\Comment;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 
 class PageController extends AbstractController 
 {
 
+	/*private $params;
+
+    public function __construct(ParameterBagInterface $params)
+    {
+        $this->params = $params;
+    }*/
+
+
 	/**
-	* @Route("/", name = "blog_homepage", requirements ={ "method" = "GET"})
+	* @Route(
+	*		"/", 
+	*		name = "blog_homepage",
+	*		requirements ={ "method" = "GET"}
+	* )
 	*/
 	public function index()
 	{
 
 		$em = $this->getDoctrine()
                    ->getManager();
-
-
         $blogs  = $em->getRepository(Blog::class)->getLatestBlogs();
-       /* $blogs = $em->createQueryBuilder()
-                    ->select('b')
-                    ->from(Blog::class,  'b')
-                    ->addOrderBy('b.created', 'DESC')
-                    ->getQuery()
-                    ->getResult();*/
 
 		return $this->render('Page/index.html.twig',['blogs' =>$blogs]);
 	}
 
 	/**
-	* @Route("/about", name ="blog_about")
+	* @Route(
+	*		"/about",
+	*		 name ="blog_about"
+	* )
 	*/
 	public function about()
 	{
@@ -43,18 +52,19 @@ class PageController extends AbstractController
 	}
 
 	/**
-	* @Route("/contact", name = "blog_contact", requirements = { "method" = "GET|POST"})
+	* @Route(
+	*		"/contact",
+	*		name = "blog_contact", 
+	*		requirements = { "method" = "GET|POST"}
+	* )
 	*/
 	public function contact(Request $request, \Swift_Mailer $mailer)
 	{
 		$enquiry = new Enquiry();
     	$form = $this->createForm(EnquiryType::class, $enquiry);
 
-    	//$request = $this->getRequest();
-
     	$form->handleRequest($request);
     	if ($request->getMethod() == 'POST') {
-       	 	//$form->bindRequest($request);
 
         	if (($form->isSubmitted()) && ($form->isValid())) {
 	            // Perform some action, such as sending an email
@@ -75,7 +85,30 @@ class PageController extends AbstractController
     	return $this->render('Page/contact.html.twig', array(
        	 'form' => $form->createView()
     	));
+	}
 
+
+	public function sidebarAction()
+	{
+	    $em = $this->getDoctrine()
+	               ->getManager();
+
+	    $tags = $em->getRepository(Blog::class)
+	               ->getTags();
+
+	    $tagWeights = $em->getRepository(Blog::class)
+	                     ->getTagWeights($tags);
+
+		//$commentLimit = $this->params->get('bogger_blog.comments.latest_comment_limit');  // to check
+
+		$commentLimit = 10 ;
+    	$latestComments = $em->getRepository(Comment::class)
+                         ->getLatestComments($commentLimit);
+
+	    return $this->render('Page/sidebar.html.twig', array(
+	    	'latestComments'    => $latestComments,
+	        'tags' => $tagWeights
+	    ));
 	}
 
 } 

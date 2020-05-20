@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\BlogRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -63,6 +65,7 @@ class Blog
     {
         $this->setCreated(new \DateTime());
         $this->setUpdated(new \DateTime());
+        $this->comments = new ArrayCollection();
     }
 
 
@@ -167,5 +170,36 @@ class Blog
     public function __toString()
     {
         return $this->getTitle();
+    }
+
+    /**
+     * @return Collection|Comment[]
+     */
+    public function getComments(): Collection
+    {
+        return $this->comments;
+    }
+
+    public function addComment(Comment $comment): self
+    {
+        if (!$this->comments->contains($comment)) {
+            $this->comments[] = $comment;
+            $comment->setBlog($this);
+        }
+
+        return $this;
+    }
+
+    public function removeComment(Comment $comment): self
+    {
+        if ($this->comments->contains($comment)) {
+            $this->comments->removeElement($comment);
+            // set the owning side to null (unless already changed)
+            if ($comment->getBlog() === $this) {
+                $comment->setBlog(null);
+            }
+        }
+
+        return $this;
     }
 }
