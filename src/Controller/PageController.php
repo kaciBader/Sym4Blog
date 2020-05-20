@@ -15,14 +15,6 @@ use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 class PageController extends AbstractController 
 {
 
-	/*private $params;
-
-    public function __construct(ParameterBagInterface $params)
-    {
-        $this->params = $params;
-    }*/
-
-
 	/**
 	* @Route(
 	*		"/", 
@@ -99,9 +91,11 @@ class PageController extends AbstractController
 	    $tagWeights = $em->getRepository(Blog::class)
 	                     ->getTagWeights($tags);
 
-		//$commentLimit = $this->params->get('bogger_blog.comments.latest_comment_limit');  // to check
+	
 
-		$commentLimit = 10 ;
+		$commentLimit = $this->getParameter('blogger_blog.comments.latest_comment_limit');
+
+		//$commentLimit = 10 ;
     	$latestComments = $em->getRepository(Comment::class)
                          ->getLatestComments($commentLimit);
 
