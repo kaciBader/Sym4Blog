@@ -54,7 +54,10 @@ class CommentController extends AbstractController
             $em->persist($comment);
             $em->flush();
             
-            return $this->redirectToRoute('blog_show', ['id' => $comment->getBlog()->getId()]
+            return $this->redirectToRoute('blog_show', [
+                'id' => $comment->getBlog()->getId(),
+                'slug'  => $comment->getBlog()->getSlug()
+            ].'#comment-' . $comment->getId()
             );
         }
 

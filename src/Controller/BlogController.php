@@ -10,12 +10,12 @@ class BlogController extends AbstractController
 {
     /**
      * @Route(
-     *      "/{id}",
+     *      "/{id}/{slug}/{comments}",
      *       name="blog_show",
      *       requirements = { "id" = "\d+"}
      * )
      */
-    public function show($id)
+    public function show($id,$slug,$comments = true)
     {
     	$em = $this->getDoctrine()->getManager();
 
