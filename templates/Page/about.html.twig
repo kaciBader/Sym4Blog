@@ -1,7 +1,9 @@
 {# src/Blogger/BlogBundle/Resources/views/Page/about.html.twig #}
 {% extends 'Page/layout.html.twig' %}
 
-{% block title %}About{% endblock%}
+{% block title %}
+    {{ parent() }}-about 
+{% endblock%}
 
 {% block body %}
     <header>
