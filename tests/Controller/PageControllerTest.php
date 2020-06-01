@@ -10,15 +10,22 @@ class PageControllerTest extends WebTestCase
 
     public function testIndex()
     {
-        $client = static::createClient(); // create client
-        $crawler = $client->request('GET', '/'); // send request
-        $this->assertResponseIsSuccessful(); // 1 test successful reponse
-        $this->assertResponseStatusCodeSame(200); // 2 
+        // create client
+        $client = static::createClient(); 
+        // send request
+        $crawler = $client->request('GET', '/'); 
+         //  test successful reponse
+        $this->assertResponseIsSuccessful();
+        // test stateCode of the response
+        $this->assertResponseStatusCodeSame(200); 
+        // test stateCode of the response
         $this->assertEquals(200, $client->getResponse()->getStatusCode()); 
-        $this->assertSelectorExists('html'); // test that <html> exists
-        $this->assertPageTitleSame('sym4blog'); // test page title
+        // test that <html> exists
+        $this->assertSelectorExists('html'); 
+        // test page title
+        $this->assertPageTitleSame('sym4blog'); 
 
-        // Vérifie qu'il y a des articles dans la page
+        // check article exsitance in the page
         $this->assertTrue($crawler->filter('article.blog')->count() > 0);
         // check section Tag Cloud exists
         $this->assertSelectorTextContains('.section header h3', 'Tag Cloud');
@@ -29,8 +36,9 @@ class PageControllerTest extends WebTestCase
     }
     public function testAbout()
     {
+        // create client
         $client = static::createClient();
-
+        // send request
         $crawler = $client->request('GET', '/about');
 
         // test successful response 
@@ -43,7 +51,56 @@ class PageControllerTest extends WebTestCase
         // test section Latest Comments exists
         $this->assertEquals('Latest Comments',  $crawler->filter('.section header h3')->eq(1)->text());
 
+        // test that about page contains h1 as About sym4blog
+        $this->assertEquals(1, $crawler->filter('h1:contains("About sym4blog")')->count());
+
     } 
+
+    public function testContact()
+    {
+        $client = static::createClient();
+        $crawler =  $client->request('GET','/contact');
+        // test that contact page contains h1 as Contact sym4blog
+        $this->assertEquals(1, $crawler->filter('h1:contains("Contact sym4blog")')->count());
+        // test form 
+        $form = $crawler->selectButton("Submit")->form();
+        
+        $form['enquiry[name]']       = 'name';
+        $form['enquiry[email]']      = 'email@email.com';
+        $form['enquiry[subject]']    = 'Subject';
+        $form['enquiry[body]']       = 'The comment body must be at least 50 characters long as there is a validation constrain on the Enquiry entity';
+        $crawler = $client->submit($form);
+
+        // Il faut suivre la redirection
+        //$crawler = $client->followRedirect();
+        //$this->assertEquals(1, $crawler->filter('.blogger-notice:contains("Your contact enquiry was successfully sent. Thank you!")')->count());
+
+
+    // On vérifie que l'email a bien été envoyé
+    if ($profile = $client->getProfile())
+    {
+        $swiftMailerProfiler = $profile->getCollector('swiftmailer');
+
+        // Seul 1 message doit avoir été envoyé
+        $this->assertEquals(1, $swiftMailerProfiler->getMessageCount());
+
+        // On récupère le premier message
+        $messages = $swiftMailerProfiler->getMessages();
+        $message  = array_shift($messages);
+
+        $symblogEmail = $client->getContainer()->getParameter('blogger_blog.emails.contact_email');
+        //dump($symblogEmail);
+        // On vérifie que le message a été envoyé à la bonne adresse
+        $this->assertArrayHasKey($symblogEmail, $message->getTo());
+
+         // On suit la redirection
+    $crawler = $client->followRedirect();
+
+    $this->assertTrue($crawler->filter('.blogger-notice:contains("Your contact enquiry was successfully sent. Thank you!")')->count() > 0);
+    }
+
+        
+    }
 
 /*
     public function testIndex()

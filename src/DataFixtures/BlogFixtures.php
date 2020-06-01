@@ -78,8 +78,13 @@ class BlogFixtures extends Fixture implements OrderedFixtureInterface
 
             $blog[$i]->setAuthor($faker->name);
            // $blog->setTags('binary, one, zero, alive, dead, !trusting, movie, symblog');
-            $blog[$i]->setTags(implode(',',$faker->words($nb = 5, $asText = false)) );  
-           $blog[$i]->setCreated($faker->dateTime());
+
+            $tags  =  implode(',',$faker->words($nb = 5, $asText = false)); 
+            //$tags.push('sym4blog');
+            $tags .=',sym4blog';
+            $blog[$i]->setTags($tags); 
+
+            $blog[$i]->setCreated($faker->dateTime());
             $blog[$i]->setUpdated($blog[$i]->getCreated());
             $manager->persist($blog[$i]);
 

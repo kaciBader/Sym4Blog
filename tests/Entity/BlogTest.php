@@ -15,7 +15,7 @@ class BlogTest extends \PHPUnit\Framework\TestCase
 		$this->assertFalse('hello world' == $blog->slugify('Hello World'));
 		$this->assertEquals('hello-world', $blog->slugify(' Hello-world'));
 		$this->assertEquals('hello-world', $blog->slugify(' Hello-world '));
-		$this->assertEquals('a-day-with-symfony4', $blog->slugify('A Day With Symfony2'));
+		$this->assertEquals('a-day-with-symfony4', $blog->slugify('A Day With Symfony4'));
 
 	}
 

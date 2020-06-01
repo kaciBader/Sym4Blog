@@ -44,6 +44,13 @@ class PageController extends AbstractController
 	}
 
 	/**
+	* Calls a contact page
+	* 
+	* @param Request $request 	the request
+	* @param Swift_Mailer $mailer 	the mail
+	* 
+	* @return Response
+	*
 	* @Route(
 	*		"/contact",
 	*		name = "blog_contact", 
@@ -70,7 +77,7 @@ class PageController extends AbstractController
 
 	            // Redirect - This is important to prevent users re-posting
 	            // the form if they refresh the page
-            	return $this->redirect($this->generateUrl('blog_contact'));
+            	return $this->redirectToRoute($this->generateUrl('blog_contact'));
         	}
     	}
 
@@ -79,7 +86,11 @@ class PageController extends AbstractController
     	));
 	}
 
-
+	/**
+	* Calls a sidebar templates to show latest comment 
+	*
+	* @return Response
+	*/
 	public function sidebarAction()
 	{
 	    $em = $this->getDoctrine()
